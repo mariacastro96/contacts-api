@@ -1,0 +1,15 @@
+require: rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.5
+  Exclude:
+    - "db/**/*"
+    - "config/initializers/*"
+    - "bin/**/*"
+    - "config/**/*"
+    - "Gemfile"
+    - "spec/spec_helper.rb"
+    - "spec/rails_helper.rb"
+
+Style/Documentation:
+  Enabled: false
