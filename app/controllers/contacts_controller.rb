@@ -3,6 +3,7 @@
 class ContactsController < ApplicationController
   def index
     @contacts = Contact.all.order(created_at: :asc)
+
     render_success(@contacts)
   end
 
@@ -27,12 +28,16 @@ class ContactsController < ApplicationController
   end
 
   def history
-    @contact_versions = ContactVersion.where(contact_id: params[:id]).order(created_at: :desc)
+    find_versions_by_company_id(params[:id])
 
-    render_success(@contact_versions)
+    render_success(@versions)
   end
 
   private
+
+  def find_versions_by_company_id(id)
+    @versions = ContactVersion.where(contact_id: id).order(created_at: :desc)
+  end
 
   def find_contact_by_id(id)
     @contact = Contact.find(id)

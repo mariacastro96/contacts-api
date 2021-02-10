@@ -8,8 +8,13 @@ AllCops:
     - "bin/**/*"
     - "config/**/*"
     - "Gemfile"
+    - "app/jobs/**/*"
     - "spec/spec_helper.rb"
     - "spec/rails_helper.rb"
 
 Style/Documentation:
   Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"

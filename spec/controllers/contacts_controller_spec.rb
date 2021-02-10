@@ -10,41 +10,16 @@ RSpec.describe ContactsController, type: :controller do
   let(:phone) { Faker::PhoneNumber.phone_number }
   let(:contact_attrs) do
     {
-      first_name: first_name,
-      last_name: last_name,
-      email: email,
-      phone: phone
+      first_name: first_name, last_name: last_name, email: email, phone: phone
     }
   end
 
-  shared_examples 'renders success status' do
-    it { expect(response).to have_http_status(:success) }
-  end
-
-  shared_examples 'renders bad request status' do
-    it { expect(response).to have_http_status(:bad_request) }
-  end
-
-  shared_examples 'renders json with correct data' do
-    let(:json_response) { JSON.parse(response.body) }
-    let(:expected_keys) { %w[created_at email first_name id last_name phone updated_at] }
-
-    it { expect(json_response['data'].keys).to match_array(expected_keys) }
-  end
-
-  shared_examples 'renders correct err message' do |err_message|
-    let(:json_response) { JSON.parse(response.body) }
-
-    it { expect(json_response['message']).to eq err_message }
-  end
+  before { contacts }
 
   describe 'GET #index' do
     let(:json_response) { JSON.parse(response.body) }
 
-    before do
-      contacts
-      get :index
-    end
+    before { get :index }
 
     it_behaves_like 'renders success status'
 
@@ -52,14 +27,7 @@ RSpec.describe ContactsController, type: :controller do
   end
 
   describe 'POST #create' do
-    before do
-      contacts
-
-      post :create,
-           params: {
-             contact: contact_attrs
-           }
-    end
+    before { post :create, params: { contact: contact_attrs } }
 
     context 'with correct data' do
       let(:first_name) { Faker::Name.first_name }
@@ -71,11 +39,10 @@ RSpec.describe ContactsController, type: :controller do
 
     context 'with incorrect data' do
       let(:first_name) { nil }
-      let(:expected_err_message) { "First name can't be blank" }
 
       it_behaves_like 'renders bad request status'
 
-      it_behaves_like 'renders correct err message', expected_err_message
+      it_behaves_like 'renders err message', "First name can't be blank"
     end
   end
 
@@ -83,13 +50,7 @@ RSpec.describe ContactsController, type: :controller do
     let(:contact_to_edit) { Contact.last }
 
     before do
-      contacts
-
-      put :update,
-          params: {
-            id: contact_to_edit.id,
-            contact: contact_attrs
-          }
+      put :update, params: { id: contact_to_edit.id, contact: contact_attrs }
     end
 
     context 'with correct data' do
@@ -100,25 +61,17 @@ RSpec.describe ContactsController, type: :controller do
 
     context 'with incorrect data' do
       let(:email) { Contact.first.email }
-      let(:expected_err_message) { 'Email has already been taken' }
 
       it_behaves_like 'renders bad request status'
 
-      it_behaves_like 'renders correct err message', expected_err_message
+      it_behaves_like 'renders err message', 'Email has already been taken'
     end
   end
 
   describe 'DELETE #destroy' do
     let(:contact_to_delete) { Contact.last }
 
-    before do
-      contacts
-
-      delete :destroy,
-             params: {
-               id: contact_to_delete.id
-             }
-    end
+    before { delete :destroy, params: { id: contact_to_delete.id } }
 
     it_behaves_like 'renders success status'
 

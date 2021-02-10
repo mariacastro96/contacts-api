@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Contact, type: :model do
-  et(:contacts) { FactoryBot.create_list(:contact, 5) }
+  let(:contacts) { FactoryBot.create_list(:contact, 5) }
   let(:first_name) { Faker::Name.first_name }
   let(:last_name) { Faker::Name.last_name }
   let(:email) { Faker::Internet.unique.email }
@@ -22,26 +22,8 @@ RSpec.describe Contact, type: :model do
   end
 
   context 'when data is invalid' do
-    context 'with no first name' do
+    context 'with nil param' do
       let(:first_name) { nil }
-
-      it { expect(contact).not_to be_valid }
-    end
-
-    context 'with no last name' do
-      let(:last_name) { nil }
-
-      it { expect(contact).not_to be_valid }
-    end
-
-    context 'with no email' do
-      let(:email) { nil }
-
-      it { expect(contact).not_to be_valid }
-    end
-
-    context 'with no phone' do
-      let(:phone) { nil }
 
       it { expect(contact).not_to be_valid }
     end
@@ -53,7 +35,7 @@ RSpec.describe Contact, type: :model do
     end
   end
 
-  context '#create_contact_version' do
+  describe '#create_contact_version' do
     let(:email) { 'mail@mail.co' }
 
     before do
